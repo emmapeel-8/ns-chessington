@@ -31,7 +31,7 @@ export default class Piece {
         for (const [rowStep, colStep] of directions) {
             for (let distance = 1; distance < GameSettings.BOARD_SIZE; distance++) {
                 const square = Square.at(currentSquare.row + distance * rowStep, currentSquare.col + distance * colStep);
-                if (!Piece.isOnBoard(square)) {
+                if (!Piece.isOnBoard(square) || board.getPiece(square)) {
                     break;
                 }
                 moves.push(square);
