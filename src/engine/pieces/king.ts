@@ -10,4 +10,8 @@ export default class King extends Piece {
     public getAvailableMoves(board: Board) {
         return this.getMovesFromOffsets(board, [...LATERAL_DIRECTIONS, ...DIAGONAL_DIRECTIONS]);
     }
+
+    public canBeTaken() {
+        return false;
+    }
 }

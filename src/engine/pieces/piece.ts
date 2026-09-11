@@ -24,6 +24,14 @@ export default class Piece {
         board.movePiece(currentSquare, newSquare);
     }
 
+    public canBeTaken() {
+        return true;
+    }
+
+    protected canTake(piece: Piece) {
+        return piece.player !== this.player && piece.canBeTaken();
+    }
+
     protected getMovesInDirections(board: Board, directions: Direction[]) {
         const currentSquare = board.findPiece(this);
         const moves: Square[] = [];
@@ -31,7 +39,15 @@ export default class Piece {
         for (const [rowStep, colStep] of directions) {
             for (let distance = 1; distance < GameSettings.BOARD_SIZE; distance++) {
                 const square = Square.at(currentSquare.row + distance * rowStep, currentSquare.col + distance * colStep);
-                if (!Piece.isOnBoard(square) || board.getPiece(square)) {
+                if (!Piece.isOnBoard(square)) {
+                    break;
+                }
+
+                const occupant = board.getPiece(square);
+                if (occupant) {
+                    if (this.canTake(occupant)) {
+                        moves.push(square);
+                    }
                     break;
                 }
                 moves.push(square);
