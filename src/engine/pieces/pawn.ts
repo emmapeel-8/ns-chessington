@@ -18,9 +18,14 @@ export default class Pawn extends Piece {
         const moves: Square[] = [];
         for (let step = 1; step <= maxSteps; step++) {
             const row = currentSquare.row + step * direction;
-            if (row >= 0 && row < GameSettings.BOARD_SIZE) {
-                moves.push(Square.at(row, currentSquare.col));
+            if (row < 0 || row >= GameSettings.BOARD_SIZE) {
+                break;
             }
+            const square = Square.at(row, currentSquare.col);
+            if (board.getPiece(square)) {
+                break;
+            }
+            moves.push(square);
         }
         return moves;
     }
