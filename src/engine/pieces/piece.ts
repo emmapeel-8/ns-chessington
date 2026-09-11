@@ -30,14 +30,25 @@ export default class Piece {
 
         for (const [rowStep, colStep] of directions) {
             for (let distance = 1; distance < GameSettings.BOARD_SIZE; distance++) {
-                const row = currentSquare.row + distance * rowStep;
-                const col = currentSquare.col + distance * colStep;
-                if (row < 0 || row >= GameSettings.BOARD_SIZE || col < 0 || col >= GameSettings.BOARD_SIZE) {
+                const square = Square.at(currentSquare.row + distance * rowStep, currentSquare.col + distance * colStep);
+                if (!Piece.isOnBoard(square)) {
                     break;
                 }
-                moves.push(Square.at(row, col));
+                moves.push(square);
             }
         }
         return moves;
+    }
+
+    protected getMovesFromOffsets(board: Board, offsets: Direction[]) {
+        const currentSquare = board.findPiece(this);
+        return offsets
+            .map(([rowOffset, colOffset]) => Square.at(currentSquare.row + rowOffset, currentSquare.col + colOffset))
+            .filter(square => Piece.isOnBoard(square));
+    }
+
+    private static isOnBoard(square: Square) {
+        return square.row >= 0 && square.row < GameSettings.BOARD_SIZE
+            && square.col >= 0 && square.col < GameSettings.BOARD_SIZE;
     }
 }
