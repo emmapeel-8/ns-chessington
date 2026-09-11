@@ -60,10 +60,15 @@ export default class Piece {
         const currentSquare = board.findPiece(this);
         return offsets
             .map(([rowOffset, colOffset]) => Square.at(currentSquare.row + rowOffset, currentSquare.col + colOffset))
-            .filter(square => Piece.isOnBoard(square));
+            .filter(square => Piece.isOnBoard(square) && this.canMoveTo(board, square));
     }
 
-    private static isOnBoard(square: Square) {
+    private canMoveTo(board: Board, square: Square) {
+        const occupant = board.getPiece(square);
+        return !occupant || this.canTake(occupant);
+    }
+
+    protected static isOnBoard(square: Square) {
         return square.row >= 0 && square.row < GameSettings.BOARD_SIZE
             && square.col >= 0 && square.col < GameSettings.BOARD_SIZE;
     }

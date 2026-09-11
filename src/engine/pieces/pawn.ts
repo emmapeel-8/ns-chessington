@@ -17,15 +17,22 @@ export default class Pawn extends Piece {
 
         const moves: Square[] = [];
         for (let step = 1; step <= maxSteps; step++) {
-            const row = currentSquare.row + step * direction;
-            if (row < 0 || row >= GameSettings.BOARD_SIZE) {
-                break;
-            }
-            const square = Square.at(row, currentSquare.col);
-            if (board.getPiece(square)) {
+            const square = Square.at(currentSquare.row + step * direction, currentSquare.col);
+            if (!Piece.isOnBoard(square) || board.getPiece(square)) {
                 break;
             }
             moves.push(square);
+        }
+
+        for (const colOffset of [-1, 1]) {
+            const square = Square.at(currentSquare.row + direction, currentSquare.col + colOffset);
+            if (!Piece.isOnBoard(square)) {
+                continue;
+            }
+            const occupant = board.getPiece(square);
+            if (occupant && this.canTake(occupant)) {
+                moves.push(square);
+            }
         }
         return moves;
     }
